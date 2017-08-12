@@ -9,9 +9,9 @@ void method1(std::vector<bool>& primes)
   {
     if (primes[p])
     {
-      for (long j = p*p; j <= N; j += p)
+      for (long i = p*p; i <= N; i += p)
       {
-	primes[j] = false;
+	primes[i] = false;
       }
     }
   }
