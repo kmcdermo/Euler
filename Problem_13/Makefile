@@ -1,6 +1,6 @@
-CPPFLAGS := $(shell root-config --cflags)
-CXXFLAGS := -std=c++11 -O3 -g
-LDFLAGS  := $(shell root-config --libs)
+CPPFLAGS := -pthread -m64
+CXXFLAGS := -std=c++20 -O3 -g
+LDFLAGS  := -lpthread -lm -ldl
 
 TGTS := main
 

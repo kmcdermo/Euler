@@ -1,79 +1,80 @@
 #include "common.hh"
 
-void read_in(TString inputname, std::vector<TString>& numbers);
-TString AddNumber(TString input, TString number);
-void CheckCarry(int& tmp, const int i, bool& carry);
+void read_in(std::string inputname, std::vector<std::string>& numbers);
+std::string add_strings_as_numbers(std::string num_1, std::string num_2);
+void check_carry(int& tmp, const int i, bool& is_carry);
 
 const int N = 10;
 
 int main() 
 {
-  TString inputname = "input.txt";
-  std::vector<TString> numbers;
-  read_in(inputname,numbers);
+    std::string inputname = "input.txt";
+    std::vector<std::string> numbers;
+    read_in(inputname, numbers);
 
-  TString sum = "0";
-  for (auto&& number : numbers)
-  {
-    sum = AddNumber(sum,number);
-  }
-
-  std::cout << sum.Data() << std::endl;
-  std::cout << TString(sum(sum.Length()-N,N)).Data() << std::endl;
-}
-
-TString AddNumber(TString input, TString number)
-{
-  const int iL = input.Length();
-  const int nL = number.Length();
-  const int diff = iL-nL;
-  
-  // L = length, D = digit
-
-  TString output = "";
-  if (diff >= 0)
-  {
-    bool carry = false;
-    for (int i = iL-1; i > -1; i--)
+    std::string sum = "0";
+    for (auto&& number : numbers)
     {
-      int tmp = 0;
-      const int iD = TString(input[i]).Atoi();
-      if (i >= diff)
-      { 
-	const int nD = TString(number[i-diff]).Atoi();
-	tmp = iD + nD;
-	CheckCarry(tmp,i,carry);
-	output.Prepend(Form("%i",tmp));
-      } 
-      else
-      {
-	tmp = iD;
-	CheckCarry(tmp,i,carry);
-	output.Prepend(Form("%i",tmp));
-      }
+        sum = add_strings_as_numbers(sum, number);
     }
-  }
-  else // hack for now
-  {
-    output = number;
-  }
-  return output;
+    
+    std::cout << sum.c_str() << std::endl;
 }
 
-void CheckCarry(int& tmp, const int i, bool& carry)
+std::string add_strings_as_numbers(std::string num_1, std::string num_2)
 {
-  if (carry) tmp += 1;
-  if (tmp >= 10 && i != 0) {carry = true; tmp -= 10;}
-  else carry = false;
+    // Orient algorithm to longer number
+    if (num_1.length() < num_2.length())
+    {
+        const std::string tmp = num_1;
+        num_1 = num_2;
+        num_2 = tmp;
+    }
+
+    // Store lengths (L) of each number 
+    const int num_1_L = num_1.length();
+    const int num_2_L = num_2.length();
+    const int diff_L = num_1_L-num_2_L;
+
+    // L = length, D = digit
+    std::string output = "";
+    bool is_carry = false;
+    for (int i = num_1_L-1; i >= 0; i--)
+    {
+        int tmp = 0;
+        const int num_1_D = std::stoi(std::string(1, num_1[i]));
+        if (i >= diff_L)
+        { 
+            const int num_2_D = std::stoi(std::string(1, num_2[i-diff_L]));
+            tmp = num_1_D + num_2_D;
+            check_carry(tmp, i, is_carry);
+            output.insert(0, std::to_string(tmp));
+        } 
+        else
+        {
+            tmp = num_1_D;
+            check_carry(tmp, i, is_carry);
+            output.insert(0, std::to_string(tmp));
+        }
+    }
+
+    return output;
 }
 
-void read_in(TString inputname, std::vector<TString>& numbers)
+void check_carry(int& tmp, const int i, bool& is_carry)
 {
-  std::ifstream inputfile(inputname.Data(),std::ios_base::in);
+    if (is_carry) tmp += 1;
+    if (tmp >= 10 && i != 0) {is_carry = true; tmp -= 10;}
+    else is_carry = false;
+}
 
-  TString number;
-  while (inputfile >> number)
-  {
-    numbers.push_back(number);
-  }
+void read_in(std::string inputname, std::vector<std::string>& numbers)
+{
+    std::ifstream inputfile(inputname.c_str(),std::ios_base::in);
+    
+    std::string number;
+    while (inputfile >> number)
+    {
+        numbers.push_back(number);
+    }
 }
