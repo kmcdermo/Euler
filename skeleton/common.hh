@@ -16,7 +16,7 @@
 
 namespace StrMath
 {
-    void carry_val(const int i, int& val, int& carry)
+    void carry_val(const unsigned long long i, unsigned long long& val, unsigned long long& carry)
     {
         if (carry > 0) val += carry;
         if (val >= 10 && i != 0) {carry = val / 10; val %= 10;}
@@ -34,20 +34,20 @@ namespace StrMath
         }
         
         // Store lengths (L) of each number 
-        const int num_1_L = num_1.length();
-        const int num_2_L = num_2.length();
-        const int diff_L = num_1_L-num_2_L;
+        const unsigned long long num_1_L = num_1.length();
+        const unsigned long long num_2_L = num_2.length();
+        const unsigned long long diff_L = num_1_L-num_2_L;
         
         // L = length, D = digit
         std::string output = "";
-        int carry = 0;
-        for (int i = num_1_L-1; i >= 0; i--)
+        unsigned long long carry = 0;
+        for (unsigned long long i = num_1_L-1; i != -1; i--)
         {
-            int val = 0;
-            const int num_1_D = std::stoi(std::string(1, num_1[i]));
+            unsigned long long val = 0;
+            const unsigned long long num_1_D = std::stoull(std::string(1, num_1[i]));
             if (i >= diff_L)
-            { 
-                const int num_2_D = std::stoi(std::string(1, num_2[i-diff_L]));
+            {
+                const unsigned long long num_2_D = std::stoull(std::string(1, num_2[i-diff_L]));
                 val = num_1_D + num_2_D;
                 carry_val(i, val, carry);
                 output.insert(0, std::to_string(val));
@@ -63,7 +63,7 @@ namespace StrMath
         return output;
     }
 
-    std::string mulitply_strings_as_numbers(std::string num_1, std::string num_2)
+    std::string multiply_strings_as_numbers(std::string num_1, std::string num_2)
     {
         // Orient algorithm to longer number
         if (num_1.length() < num_2.length())
@@ -74,21 +74,21 @@ namespace StrMath
         }
         
         std::vector<std::string> outputs;
-        for (int i = num_2.length()-1; i >= 0; i--)
+        for (unsigned long long i = num_2.length()-1; i != -1; i--)
         {
-            int carry = 0;
+            unsigned long long carry = 0;
             std::string output = "";
-            const int num_2_D = std::stoi(std::string(1, num_2[i]));
+            const unsigned long long num_2_D = std::stoull(std::string(1, num_2[i]));
 
-            for (int j = num_1.length()-1; j >= 0; j--)
+            for (unsigned long long j = num_1.length()-1; j != -1; j--)
             {
-                const int num_1_D = std::stoi(std::string(1, num_1[j]));
-                int val = num_1_D * num_2_D;
+                const unsigned long long num_1_D = std::stoull(std::string(1, num_1[j]));
+                unsigned long long val = num_1_D * num_2_D;
                 carry_val(j, val, carry);
                 output.insert(0, std::to_string(val));
             }
 
-            for (int j = num_2.length()-1; j > i; j--)
+            for (unsigned long long j = num_2.length()-1; j > i; j--)
             {
                 output += "0";
             }
