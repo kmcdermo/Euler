@@ -22,6 +22,17 @@ namespace StrMath
         if (val >= 10 && i != 0) {carry = val / 10; val %= 10;}
         else carry = 0;
     }
+
+    void borrow(std::string & num, unsigned long long i)
+    {
+        for (unsigned long long j = i; j != -1; j--)
+        {
+            const unsigned long long num_D = std::stoull(std::string(1, num[j-1]));
+            const bool borrowed = (num_D != 0);
+            num.replace(j-1,1,(borrowed ? std::to_string(num_D-1) : std::to_string(9)));
+            if (borrowed) break;
+        }
+    }
     
     std::string add_strings_as_numbers(std::string num_1, std::string num_2)
     {
@@ -103,5 +114,59 @@ namespace StrMath
         }
         
         return sum;
+    }
+
+    std::string subtract_strings_as_numbers(std::string num_1, std::string num_2)
+    {
+        // Orient algorithm to longer number
+        if (num_1.length() < num_2.length())
+        {
+            const std::string tmp = num_1;
+            num_1 = num_2;
+            num_2 = tmp;
+        }
+
+        // Store lengths (L) of each number
+        const unsigned long long num_1_L = num_1.length();
+        const unsigned long long num_2_L = num_2.length();
+        const unsigned long long diff_L = num_1_L-num_2_L;
+
+        // L = length, D = digit
+        std::string output = "";
+        unsigned long long carry = 0;
+        for (unsigned long long i = num_1_L-1; i != -1; i--)
+        {
+            unsigned long long num_1_D = std::stoull(std::string(1, num_1[i]));
+            if (i >= diff_L)
+            {
+                const unsigned long long num_2_D = std::stoull(std::string(1, num_2[i-diff_L]));
+                if (num_1_D < num_2_D)
+                {
+                    borrow(num_1,i);
+                    num_1_D += 10;
+                }
+                output.insert(0, std::to_string(num_1_D-num_2_D));
+            }
+            else
+            {
+                output.insert(0, std::to_string(num_1_D));
+            }
+
+            std::cout << output << std::endl;
+        }
+
+        // Remove leading zeros
+        bool no_leading_zero = false;
+        while (!no_leading_zero)
+        {
+            const unsigned long long num = std::stoull(std::string(1, output[0]));
+            no_leading_zero = (num != 0);
+            if (!no_leading_zero)
+            {
+                output.erase(0, 1);
+            }
+        }
+
+        return output;
     }
 };
